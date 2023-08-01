@@ -1,71 +1,58 @@
-const tareas = [];
-
-function agregarTarea() {
-const nuevaTarea = prompt('Ingrese una nueva tarea:');
-tareas.push(nuevaTarea);
-alert(`Tarea "${nuevaTarea}" agregada exitosamente.`);
+function Product(name, price) {
+    this.name = name;
+    this.price = price;
 }
 
-function mostrarTareas() {
-if (tareas.length === 0) {
-    alert('La lista de tareas está vacía.');
-} else {
-    let listaTareas = 'Lista de tareas:\n';
-    for (let i = 0; i < tareas.length; i++) {
-    listaTareas += `${i + 1}. ${tareas[i]}\n`;
+let cartItems = [];
+
+function addItemByPrompt() {
+    const name = prompt('Ingrese el nombre del producto:');
+    if (name === null || name.trim() === '') {
+        return;
     }
-    alert(listaTareas);
-}
+
+    let price;
+    do {
+        const priceInput = prompt('Ingrese el precio del producto:');
+        price = parseFloat(priceInput);
+    } while (isNaN(price) || price <= 0);
+
+    const product = new Product(name, price);
+    cartItems.push(product);
+    alert(`El producto "${name}" ha sido agregado al carrito.`);
 }
 
-function completarTarea() {
-const indice = prompt('Ingrese el número de la tarea que desea marcar como completada:');
-if (indice >= 1 && indice <= tareas.length) {
-    const tareaCompletada = tareas.splice(indice - 1, 1);
-    alert(`¡La tarea "${tareaCompletada}" ha sido marcada como completada!`);
-} else {
-    alert('Índice de tarea inválido. Por favor, ingrese un número de tarea válido.');
-}
-}
-
-function eliminarTarea() {
-const indice = prompt('Ingrese el número de la tarea que desea eliminar:');
-if (indice >= 1 && indice <= tareas.length) {
-const tareaEliminada = tareas.splice(indice - 1, 1);
-alert(`La tarea "${tareaEliminada}" ha sido eliminada exitosamente.`);
-} else {
-    alert('Índice de tarea inválido. Por favor, ingrese un número de tarea válido.');
-}
-}
-
-function iniciarPrograma() {
-let opcion = '';
-
-while (opcion !== 'Salir') {
-    opcion = prompt('Ingrese una opción: Agregar, Mostrar, Completar, Eliminar o Salir');
-    
-    switch (opcion) {
-    case 'Agregar':
-        agregarTarea();
-        break;
-    case 'Mostrar':
-        mostrarTareas();
-        break;
-    case 'Completar':
-        completarTarea();
-        break;
-    case 'Eliminar':
-        eliminarTarea();
-        break;
-    case 'Salir':
-        alert('¡Hasta luego!');
-        break;
-    default:
-        alert('Opción inválida. Por favor, ingrese una opción válida.');
-        break;
+function viewCart() {
+    if (cartItems.length === 0) {
+        alert('El carrito está vacío.');
+        return;
     }
-}
+
+    let cartList = 'Productos en el carrito:\n';
+    let total = 0;
+
+    cartItems.forEach((item, index) => {
+        cartList += `${index + 1}. ${item.name} - $${item.price.toFixed(2)}\n`;
+        total += item.price;
+    });
+
+    cartList += `\nTotal: $${total.toFixed(2)}`;
+
+    alert(cartList);
 }
 
-iniciarPrograma();
+function removeItemByPrompt() {
+    if (cartItems.length === 0) {
+        alert('El carrito está vacío.');
+        return;
+    }
 
+    let index;
+    do {
+        const indexInput = prompt('Ingrese el número del producto que desea eliminar:');
+        index = parseInt(indexInput) - 1;
+    } while (isNaN(index) || index < 0 || index >= cartItems.length);
+
+    const removedItem = cartItems.splice(index, 1)[0];
+    alert(`El producto "${removedItem.name}" ha sido eliminado del carrito.`);
+}
